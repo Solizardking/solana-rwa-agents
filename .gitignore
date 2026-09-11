@@ -1,0 +1,15 @@
+.anchor
+.DS_Store
+target
+node_modules
+dist
+build
+test-ledger
+*.log
+.idea
+.vscode
+.env
+.env.local
+*.pem
+id.json
+wallet.json

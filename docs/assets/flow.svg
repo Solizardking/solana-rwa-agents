@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 220" width="960" height="220" role="img" aria-label="Pair, launch, trade">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#9945FF"/>
+      <stop offset="100%" stop-color="#14F195"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="960" height="220" rx="24" fill="#07070d"/>
+  <rect x="1.5" y="1.5" width="957" height="217" rx="22.5" fill="none" stroke="url(#g)" stroke-width="1.5" opacity="0.7"/>
+
+  <!-- pulse line -->
+  <path d="M150 110 H810" stroke="#1c1c2a" stroke-width="4" fill="none"/>
+  <circle r="7" fill="#14F195" filter="url(#glow)">
+    <animateMotion dur="3.6s" repeatCount="indefinite" path="M150 110 H810"/>
+  </circle>
+
+  <!-- cards -->
+  <g>
+    <rect x="40" y="50" width="180" height="120" rx="16" fill="#12121c" stroke="#9945FF" stroke-width="2"/>
+    <text x="130" y="92" text-anchor="middle" fill="#c9b3ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">01</text>
+    <text x="130" y="122" text-anchor="middle" fill="#ffffff" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="700">PAIR</text>
+    <text x="130" y="146" text-anchor="middle" fill="#8b8ba0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">agent + RWA</text>
+    <animate attributeName="opacity" values="0.55;1;0.55" dur="3.6s" begin="0s" repeatCount="indefinite"/>
+  </g>
+  <g>
+    <rect x="390" y="50" width="180" height="120" rx="16" fill="#12121c" stroke="#14F195" stroke-width="2"/>
+    <text x="480" y="92" text-anchor="middle" fill="#9dffd6" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">02</text>
+    <text x="480" y="122" text-anchor="middle" fill="#ffffff" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="700">LAUNCH</text>
+    <text x="480" y="146" text-anchor="middle" fill="#8b8ba0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">bondingCurve</text>
+    <animate attributeName="opacity" values="0.55;1;0.55" dur="3.6s" begin="1.2s" repeatCount="indefinite"/>
+  </g>
+  <g>
+    <rect x="740" y="50" width="180" height="120" rx="16" fill="#12121c" stroke="#9945FF" stroke-width="2"/>
+    <text x="830" y="92" text-anchor="middle" fill="#c9b3ff" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="12">03</text>
+    <text x="830" y="122" text-anchor="middle" fill="#ffffff" font-family="ui-sans-serif, system-ui, sans-serif" font-size="20" font-weight="700">TRADE</text>
+    <text x="830" y="146" text-anchor="middle" fill="#8b8ba0" font-family="ui-sans-serif, system-ui, sans-serif" font-size="12">Asset Signer</text>
+    <animate attributeName="opacity" values="0.55;1;0.55" dur="3.6s" begin="2.4s" repeatCount="indefinite"/>
+  </g>
+</svg>

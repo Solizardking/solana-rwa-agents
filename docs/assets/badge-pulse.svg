@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 36" width="280" height="36">
+  <rect width="280" height="36" rx="18" fill="#12121c" stroke="#9945FF"/>
+  <circle cx="22" cy="18" r="6" fill="#14F195">
+    <animate attributeName="opacity" values="0.3;1;0.3" dur="1.6s" repeatCount="indefinite"/>
+  </circle>
+  <text x="40" y="23" fill="#ffffff" font-family="ui-sans-serif, system-ui, sans-serif" font-size="13" font-weight="600">dry-run default · no broadcast</text>
+</svg>
