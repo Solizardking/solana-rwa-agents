@@ -187,7 +187,6 @@ export function buildRwaTransferOwnership(
   },
 ): RwaTransferOwnershipPlan {
   const mint = asPublicKey(input.mint ?? requirePairingMint(pairing));
-  const from = assetSignerKey(pairing);
   const to = asPublicKey(input.destinationOwner);
   const fromTokenAccount = pairingMintAta(umi, pairing, mint);
   const toTokenAccount = findAssociatedTokenPda(umi, { mint, owner: to });

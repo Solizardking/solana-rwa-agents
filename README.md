@@ -65,7 +65,7 @@ You should see the EIP-8004 type, a paired RWA id, `bondingCurve`, `setToken: tr
 npm run agents:dry-run -- --agent <CORE> --rwa <ASSET> --rwa-id <ID> --mint <MINT> --to <WALLET>
 ```
 
-Copy `.env.sample` → `.env` for the same knobs. Never commit a keypair.
+Copy `.env.example` → `.env` for QuickNode settings; see [QuickNode setup](docs/quicknode.md). Never commit a keypair.
 
 Optional on-chain toolchain: Anchor **0.30.1**, Rust stable, Solana CLI.
 

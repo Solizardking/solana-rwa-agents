@@ -18,6 +18,7 @@ pub struct RegisterAssetArgs {
 #[derive(Accounts)]
 pub struct RegisterAsset<'info> {
     #[account(
+        mut,
         seeds = [GlobalConfig::SEEDS],
         bump
     )]
@@ -62,8 +63,7 @@ impl<'info> RegisterAsset<'info> {
         );
 
         // Transfer registration fee
-        **self.owner.to_account_info().try_borrow_mut_lamports()? -= self.global_config.registration_fee;
-        **self.global_config.to_account_info().try_borrow_mut_lamports()? += self.global_config.registration_fee;
+        anchor_lang::system_program::transfer(CpiContext::new(self.system_program.to_account_info(), anchor_lang::system_program::Transfer { from: self.owner.to_account_info(), to: self.global_config.to_account_info() }), self.global_config.registration_fee)?;
 
         // Initialize asset
         self.asset.init(

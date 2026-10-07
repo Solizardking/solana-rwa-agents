@@ -51,6 +51,7 @@ export async function submitGenesisLaunch(
     body: JSON.stringify(payload),
   });
   const body = await response.json();
+  if (!response.ok) throw new Error(`Genesis launch request failed (${response.status})`);
   return { payload, submitted: true, response: body };
 }
 

@@ -31,7 +31,26 @@ import {
   shapeCreateAndRegisterLaunch,
   submitGenesisLaunch,
   defaultAgentToken,
+  buildExecuteTransferTokens,
 } from '../agents';
+
+test('re-pairing and replacement cannot reset an irreversible agent token binding', () => {
+  const umi=createAgentUmiWithIdentity();const registry=new PairingRegistry();const agent=generateSigner(umi).publicKey;const rwa=generateSigner(umi).publicKey;const id=generateSigner(umi).publicKey;
+  pairAgentWithRwa(umi,{agentAsset:agent,rwaAsset:rwa,rwaAssetId:id,registry});registry.bindAgentToken(String(agent),'So11111111111111111111111111111111111111112');
+  const again=pairAgentWithRwa(umi,{agentAsset:agent,rwaAsset:rwa,rwaAssetId:id,registry});assert.equal(again.agentTokenBound,true);assert.throws(()=>shapeCreateAndRegisterLaunch(again,defaultAgentToken(again)),/irreversible/);
+  pairAgentWithRwa(umi,{agentAsset:generateSigner(umi).publicKey,rwaAsset:rwa,rwaAssetId:id,registry,replace:true});
+  const restored=pairAgentWithRwa(umi,{agentAsset:agent,rwaAsset:generateSigner(umi).publicKey,rwaAssetId:id,registry});assert.equal(restored.agentTokenBound,true);
+});
+
+test('Asset Signer token transfers are wrapped by the Core execute instruction', () => {
+  const umi=createAgentUmiWithIdentity();const p=pairAgentWithRwa(umi,{agentAsset:generateSigner(umi).publicKey,rwaAsset:generateSigner(umi).publicKey,rwaAssetId:generateSigner(umi).publicKey,rwaMint:'So11111111111111111111111111111111111111112'});
+  const built=buildExecuteTransferTokens(umi,p,{destinationOwner:generateSigner(umi).publicKey,amount:1n});assert.equal(String(built.builder.getInstructions()[0].programId),'CoREENxT6tW1HoK8ypY1SxRMZTcVPm7R94rH4PZNhX7d');assert(instructionPubkeys(built.builder).includes(p.agentAsset));
+});
+
+test('Genesis HTTP failures are rejected instead of reported as a submitted success', async () => {
+  const umi=createAgentUmiWithIdentity();const p=pairAgentWithRwa(umi,{agentAsset:generateSigner(umi).publicKey,rwaAsset:generateSigner(umi).publicKey,rwaAssetId:generateSigner(umi).publicKey});
+  await assert.rejects(submitGenesisLaunch(shapeCreateAndRegisterLaunch(p,defaultAgentToken(p)),{execute:true,fetch:async()=>new Response('{}',{status:503})}),/503/);
+});
 
 const WSOL = 'So11111111111111111111111111111111111111112';
 const USDC = 'EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v';

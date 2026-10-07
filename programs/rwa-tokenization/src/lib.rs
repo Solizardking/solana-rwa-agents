@@ -8,6 +8,7 @@ pub mod states;
 pub mod utils;
 
 use crate::instructions::*;
+use crate::consts::AssetStatus;
 
 declare_id!("RWA1111111111111111111111111111111111111111");
 

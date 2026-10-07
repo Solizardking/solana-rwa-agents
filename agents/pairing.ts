@@ -5,6 +5,7 @@ import { AgentRwaPairing } from './types';
 export class PairingRegistry {
   private byRwa = new Map<string, AgentRwaPairing>();
   private byAgent = new Map<string, AgentRwaPairing>();
+  private boundTokens = new Map<string, string | undefined>();
 
   getByRwa(rwaAsset: string): AgentRwaPairing | undefined {
     return this.byRwa.get(rwaAsset);
@@ -23,6 +24,14 @@ export class PairingRegistry {
     const existing = this.byRwa.get(pairing.rwaAsset);
     if (existing && existing.agentAsset !== pairing.agentAsset && !replace) {
       throw new Error(`RWA asset ${pairing.rwaAsset} is already paired with agent ${existing.agentAsset}`);
+    }
+    // Re-pairing must never clear an agent's irreversible canonical-token binding.
+    if (this.boundTokens.has(pairing.agentAsset)) {
+      const token = this.boundTokens.get(pairing.agentAsset);
+      if (pairing.agentToken && token && pairing.agentToken !== token) throw new Error('setToken is irreversible; canonical token cannot be replaced');
+      pairing = { ...pairing, agentTokenBound: true, agentToken: token };
+    } else if (pairing.agentTokenBound) {
+      this.boundTokens.set(pairing.agentAsset, pairing.agentToken);
     }
     if (existing && existing.agentAsset !== pairing.agentAsset) {
       this.byAgent.delete(existing.agentAsset);
@@ -71,7 +80,7 @@ export function pairAgentWithRwa(
     agentTokenBound: false,
   };
   if (input.registry) {
-    input.registry.pair(pairing, { replace: input.replace });
+    return input.registry.pair(pairing, { replace: input.replace });
   }
   return pairing;
 }

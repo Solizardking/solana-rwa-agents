@@ -7,9 +7,13 @@
     "test": "npm run test:agents",
     "test:agents": "TS_NODE_TRANSPILE_ONLY=1 node --require ts-node/register --test --test-force-exit tests/agents-rwa.test.ts",
     "test:anchor": "anchor test",
-    "agents:dry-run": "TS_NODE_TRANSPILE_ONLY=1 node --require ts-node/register scripts/pair-and-launch.ts",
+    "agents:dry-run": "TS_NODE_TRANSPILE_ONLY=1 node --require ./scripts/load-env.cjs --require ts-node/register scripts/pair-and-launch.ts",
     "build": "anchor build",
-    "deploy": "anchor deploy"
+    "deploy": "anchor deploy",
+    "quicknode:verify": "node scripts/verify-quicknode.mjs",
+    "test:quicknode": "TS_NODE_TRANSPILE_ONLY=1 node --require ts-node/register --test tests/quicknode.test.ts",
+    "check:quicknode": "tsc --noEmit --strict --skipLibCheck --esModuleInterop --target ES2020 --module commonjs agents/quicknode.ts",
+    "agents:check": "tsc --noEmit -p tsconfig.agents.json"
   },
   "keywords": [
     "solana",

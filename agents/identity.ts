@@ -182,7 +182,7 @@ export function buildSetAgentToken(
   const builder = execute(umi, {
     asset: { publicKey: asset },
     collection: collection ? { publicKey: asPublicKey(collection) } : undefined,
-    instructions: inner,
+    instructions: inner.getInstructions(),
   });
   return { builder, assetSigner, agentIdentity };
 }

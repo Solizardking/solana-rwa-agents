@@ -1,20 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::{
-    associated_token::AssociatedToken,
-    token_2022::{
-        self,
-        spl_token_2022::{
-            extension::{
-                BaseStateWithExtensions, ExtensionType, StateWithExtensions,
-            },
-            state::Mint as MintState,
-        },
-        Token2022,
-    },
-    token_interface::{
-        initialize_mint2, mint_to, InitializeMint2, MintTo, TokenInterface,
-    },
-};
+use anchor_spl::{associated_token::AssociatedToken, token_interface::{mint_to, MintTo, TokenInterface, Mint}};
 use crate::states::{GlobalConfig, RwaAsset, Tokenization};
 use crate::consts::{DEFAULT_DECIMALS, TOKENIZATION_SEED};
 use crate::events::AssetTokenized;
@@ -23,6 +8,7 @@ use crate::errors::RwaTokenizationError;
 #[derive(Accounts)]
 pub struct TokenizeAsset<'info> {
     #[account(
+        mut,
         seeds = [GlobalConfig::SEEDS],
         bump
     )]
@@ -42,8 +28,9 @@ pub struct TokenizeAsset<'info> {
         payer = owner,
         mint::decimals = DEFAULT_DECIMALS,
         mint::authority = tokenization,
+        mint::token_program = token_program,
     )]
-    pub mint: Box<InterfaceAccount<'info, MintState>>,
+    pub mint: Box<InterfaceAccount<'info, Mint>>,
 
     #[account(
         init,
@@ -59,6 +46,7 @@ pub struct TokenizeAsset<'info> {
         payer = owner,
         associated_token::mint = mint,
         associated_token::authority = owner,
+        associated_token::token_program = token_program,
     )]
     pub owner_token_account: Box<InterfaceAccount<'info, anchor_spl::token_interface::TokenAccount>>,
 
@@ -85,8 +73,7 @@ impl<'info> TokenizeAsset<'info> {
         );
 
         // Transfer tokenization fee
-        **self.owner.to_account_info().try_borrow_mut_lamports()? -= self.global_config.tokenization_fee;
-        **self.global_config.to_account_info().try_borrow_mut_lamports()? += self.global_config.tokenization_fee;
+        anchor_lang::system_program::transfer(CpiContext::new(self.system_program.to_account_info(), anchor_lang::system_program::Transfer { from: self.owner.to_account_info(), to: self.global_config.to_account_info() }), self.global_config.tokenization_fee)?;
 
         // Initialize tokenization record
         self.tokenization.init(
@@ -103,14 +90,15 @@ impl<'info> TokenizeAsset<'info> {
             to: self.owner_token_account.to_account_info(),
             authority: self.tokenization.to_account_info(),
         };
+        let asset_key = self.asset.key();
+        let (_, bump) = Pubkey::find_program_address(&[TOKENIZATION_SEED, asset_key.as_ref()], &crate::ID);
+        let bump_seed = [bump];
+        let seeds: &[&[u8]] = &[TOKENIZATION_SEED, asset_key.as_ref(), &bump_seed];
+        let signer_seeds = [seeds];
         let cpi_ctx = CpiContext::new_with_signer(
             self.token_program.to_account_info(),
             cpi_accounts,
-            &[&[
-                TOKENIZATION_SEED,
-                self.asset.key().as_ref(),
-                &[self.tokenization.bump],
-            ]],
+            &signer_seeds,
         );
         mint_to(cpi_ctx, total_supply)?;
 

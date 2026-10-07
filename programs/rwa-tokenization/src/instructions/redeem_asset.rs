@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_spl::token_interface::{burn, Burn, TokenInterface};
+use anchor_spl::token_interface::{burn, Burn, TokenInterface, TokenAccount, Mint};
 use crate::states::{RwaAsset, Tokenization};
 use crate::consts::{TOKENIZATION_SEED, AssetStatus};
 use crate::events::AssetRedeemed;
@@ -24,13 +24,11 @@ pub struct RedeemAsset<'info> {
     #[account(mut)]
     pub owner: Signer<'info>,
 
-    /// CHECK: Token account
-    #[account(mut)]
-    pub owner_token_account: AccountInfo<'info>,
+    #[account(mut, constraint = owner_token_account.owner == owner.key(), constraint = owner_token_account.mint == mint.key())]
+    pub owner_token_account: InterfaceAccount<'info, TokenAccount>,
 
-    /// CHECK: Mint account
-    #[account(mut)]
-    pub mint: AccountInfo<'info>,
+    #[account(mut, constraint = asset.mint == Some(mint.key()), constraint = tokenization.mint == mint.key())]
+    pub mint: InterfaceAccount<'info, Mint>,
 
     pub token_program: Interface<'info, TokenInterface>,
     pub clock: Sysvar<'info, Clock>,

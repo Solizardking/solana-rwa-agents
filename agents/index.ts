@@ -5,4 +5,6 @@ export * from './catalog';
 export * from './pairing';
 export * from './launch';
 export * from './trade';
+export * from './execute';
 export * from './run';
+export * from './quicknode';

@@ -1,0 +1,5 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "lib": ["ES2020", "DOM"], "noEmit": true },
+  "include": ["agents/**/*.ts", "scripts/pair-and-launch.ts", "tests/agents-rwa.test.ts", "tests/quicknode.test.ts"]
+}

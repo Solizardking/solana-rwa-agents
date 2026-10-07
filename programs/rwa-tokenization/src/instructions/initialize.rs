@@ -27,7 +27,7 @@ pub struct Initialize<'info> {
 }
 
 impl<'info> Initialize<'info> {
-    pub fn process(&self, params: InitializeParams) -> Result<()> {
+    pub fn process(&mut self, params: InitializeParams) -> Result<()> {
         require!(
             params.platform_fee_bps <= 10000,
             RwaTokenizationError::InvalidConfiguration

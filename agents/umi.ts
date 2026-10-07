@@ -5,7 +5,7 @@ import { generateSigner, signerIdentity, Umi } from '@metaplex-foundation/umi';
 import { createUmi } from '@metaplex-foundation/umi-bundle-defaults';
 
 export function defaultRpcUrl(env: NodeJS.ProcessEnv = process.env): string {
-  return env.RPC_ENDPOINT || env.RPC_URL || 'http://127.0.0.1:8899';
+  return env.RPC_ENDPOINT || env.SOLANA_RPC_URL || env.RPC_URL || 'http://127.0.0.1:8899';
 }
 
 export function createAgentUmi(rpcUrl?: string, env: NodeJS.ProcessEnv = process.env): Umi {
